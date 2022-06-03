@@ -87,6 +87,7 @@ def main():
             print(f"Total amount of not-followees scraped: {count}\n")
 
         if args.profile_pic:
+            print(f"Downloading {target} profile picture...")
             scraper.download_image(target_info["profile_pic_url_hd"], f"{target}-pp.jpeg")
 
 
