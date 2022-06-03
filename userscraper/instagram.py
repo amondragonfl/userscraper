@@ -7,7 +7,7 @@ import pickle
 from typing import Generator
 
 
-class Instagram:
+class InstagramScraper:
     def __init__(self, request_timeout: float = 10.0):
         self.request_timeout = request_timeout
         self.session = self.default_session()
