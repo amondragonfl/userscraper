@@ -153,3 +153,8 @@ class InstagramScraper:
         if resp.text.find("not-logged-in") == -1:
             return True
         return False
+
+    def download_image(self, url: str, file_path: str) -> None:
+        resp = self.session.get(url, headers={"Host": "instagram.fhou1-2.fna.fbcdn.net"})
+        with open(file_path, 'wb') as file:
+            file.write(resp.content)
