@@ -15,6 +15,7 @@ def main():
     parser.add_argument("--followees", "-e", help="Scrape target's followees", action="store_true")
     parser.add_argument("--not-followers", "-n", help="Scrape users not following target back", action="store_true")
     parser.add_argument("--count", "-c", help="Maximum amount of items to scrape", type=int)
+    parser.add_argument("--profile-pic", "-P", help="Download target's profile picture", action="store_true")
     args = parser.parse_args()
 
     if args.not_followers and args.count:
@@ -83,8 +84,10 @@ def main():
                         file.write(followee + "\n")
                         print(f"@{followee}")
                         count += 1
-
             print(f"Total amount of not-followees scraped: {count}\n")
+
+        if args.profile_pic:
+            scraper.download_image(target_info["profile_pic_url_hd"], f"{target}-pp.jpeg")
 
 
 if __name__ == "__main__":
