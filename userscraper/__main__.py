@@ -52,9 +52,27 @@ def main():
             continue
 
         if args.followers or args.not_followers:
+            print(f"Scraping {target} followers...")
             target_followers = {user["username"] for user in scraper.get_followers(target_id, max_count=args.count)}
         if args.followees or args.not_followers:
+            print(f"Scraping {target} followees...")
             target_followees = {user["username"] for user in scraper.get_followees(target_id, max_count=args.count)}
+
+        if args.followers:
+            print(f"[{target} followers]")
+            with open(f"{target}-followers.txt", "w") as file:
+                for follower in target_followers:
+                    file.write(follower + "\n")
+                    print(f"@{follower}")
+            print(f"Total amount of followers scraped: {len(target_followers)}\n")
+
+        if args.followees:
+            print(f"[{target} followees]")
+            with open(f"{target}-followees.txt", "w") as file:
+                for followee in target_followees:
+                    file.write(followee + "\n")
+                    print(f"@{followee}")
+            print(f"Total amount of followees scraped: {len(target_followees)}\n")
 
 
 if __name__ == "__main__":
