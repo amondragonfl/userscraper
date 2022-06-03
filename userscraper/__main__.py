@@ -1,4 +1,7 @@
+from exceptions import TwoFactorAuthRequiredError, AuthenticationError
+from instagram import InstagramScraper
 from argparse import ArgumentParser
+from getpass import getpass
 
 
 def main():
@@ -15,8 +18,26 @@ def main():
     args = parser.parse_args()
 
     if args.not_followers and args.count:
-        raise SystemExit("--not-followers and --count cannot be used together, since all followers and followees need "
-                         "to be scraped in order to get accurate results.")
+        raise SystemExit("--not-followers and --count cannot be used together, since it would throw inaccurate results.")
+
+    scraper = InstagramScraper()
+    try:
+        scraper.load_session(f"{args.username}-session.dat")
+        if not scraper.is_logged_in():
+            print("Previous session expired.")
+            raise EOFError
+    except (FileNotFoundError, EOFError):
+        if not args.password:
+            args.password = getpass(f"Enter password for {args.username}: ")
+            try:
+                try:
+                    scraper.login(args.username, args.password)
+                except TwoFactorAuthRequiredError:
+                    code = input("Enter 2FA code: ")
+                    scraper.verify_two_factor(code)
+            except AuthenticationError as err:
+                raise SystemExit(err)
+            scraper.save_session(f"{args.username}-session.dat")
 
 
 if __name__ == "__main__":
