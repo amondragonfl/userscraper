@@ -144,7 +144,7 @@ class InstagramScraper:
         query_id = '17874545323001329'
         followees_gen = self.query_nodes(query_id, {'id': user_id}, 'edge_follow')
         for count, followee in enumerate(followees_gen):
-            if max_count and count > max_count:
+            if max_count and count == max_count:
                 break
             yield followee
 
