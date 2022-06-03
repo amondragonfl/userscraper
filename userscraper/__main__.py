@@ -74,6 +74,18 @@ def main():
                     print(f"@{followee}")
             print(f"Total amount of followees scraped: {len(target_followees)}\n")
 
+        if args.not_followers:
+            print(f"[{target} not-followers]")
+            count = 0
+            with open(f"{target}-not-followers.txt", "w") as file:
+                for followee in target_followees:
+                    if followee not in target_followers:
+                        file.write(followee + "\n")
+                        print(f"@{followee}")
+                        count += 1
+
+            print(f"Total amount of not-followees scraped: {count}\n")
+
 
 if __name__ == "__main__":
     main()
