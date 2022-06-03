@@ -1,4 +1,4 @@
-from exceptions import TwoFactorAuthRequiredError, AuthenticationError
+from exceptions import TwoFactorAuthRequiredError, AuthenticationError, UserNotFoundError
 from instagram import InstagramScraper
 from argparse import ArgumentParser
 from getpass import getpass
@@ -31,6 +31,7 @@ def main():
             args.password = getpass(f"Enter password for {args.username}: ")
             try:
                 try:
+                    print("Logging in...")
                     scraper.login(args.username, args.password)
                 except TwoFactorAuthRequiredError:
                     code = input("Enter 2FA code: ")
@@ -39,6 +40,17 @@ def main():
                 raise SystemExit(err)
             scraper.save_session(f"{args.username}-session.dat")
 
+    if not args.target:
+        args.target = [args.username]
+
+    for target in args.target:
+        try:
+            target_info = scraper.get_user_info(target)
+            target_id = target_info["id"]
+        except UserNotFoundError:
+            print(f"Target {target} was not found.")
+            continue
+          
 
 if __name__ == "__main__":
     main()
