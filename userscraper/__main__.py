@@ -84,7 +84,7 @@ def main():
                         file.write(followee + "\n")
                         print(f"@{followee}")
                         count += 1
-            print(f"Total amount of not-followees scraped: {count}\n")
+            print(f"Total amount of not-followers scraped: {count}\n")
 
         if args.profile_pic:
             print(f"Downloading {target} profile picture...")
