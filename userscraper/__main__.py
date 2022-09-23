@@ -62,7 +62,6 @@ def main():
         if args.followers:
             print(f"[{target} followers]")
             for follower in target_followers:
-                file.write(follower + "\n")
                 print(f"@{follower}")
             print(f"Total amount of followers scraped: {len(target_followers)}\n")
 
