@@ -30,6 +30,7 @@ class InstagramScraper:
         return session
 
     def login(self, username: str, password: str) -> None:
+        self.session = self.default_session()
         resp = self.session.get("https://www.instagram.com/")
         self.session.headers.update({'X-CSRFToken': resp.cookies['csrftoken']})
 
@@ -149,10 +150,10 @@ class InstagramScraper:
             yield followee
 
     def is_logged_in(self) -> bool:
-        resp = self.session.get("https://www.instagram.com/")
-        if resp.text.find("not-logged-in") == -1:
-            return True
-        return False
+        resp = self.session.get("https://www.instagram.com/accounts/edit/",  allow_redirects=False)
+        if resp.status_code == 302:
+            return False
+        return True
 
     def download_image(self, url: str, file_path: str) -> None:
         resp = self.session.get(url, headers={"Host": "instagram.fhou1-2.fna.fbcdn.net"})
