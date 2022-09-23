@@ -16,6 +16,7 @@ def main():
     parser.add_argument("--not-followers", "-n", help="Scrape users not following target back", action="store_true")
     parser.add_argument("--count", "-c", help="Maximum amount of items to scrape", type=int)
     parser.add_argument("--profile-pic", "-P", help="Download target's profile picture", action="store_true")
+    parser.add_argument("--save", "-s", help="Save scraped data to current working directory", action="store_true")
     args = parser.parse_args()
 
     if args.not_followers and args.count:
@@ -63,12 +64,20 @@ def main():
             print(f"[{target} followers]")
             for follower in target_followers:
                 print(f"@{follower}")
+            if args.save:
+                with open(f"{target}-followers.txt", "w") as f:
+                    for follower in target_followers:
+                        f.write(follower + "\n")
             print(f"Total amount of followers scraped: {len(target_followers)}\n")
 
         if args.followees:
             print(f"[{target} followees]")
             for followee in target_followees:
                 print(f"@{followee}")
+            if args.save:
+                with open(f"{target}-followees.txt", "w") as f:
+                    for followee in target_followees:
+                        f.write(followee + "\n")
             print(f"Total amount of followees scraped: {len(target_followees)}\n")
 
         if args.not_followers:
@@ -78,6 +87,11 @@ def main():
                 if followee not in target_followers:
                     print(f"@{followee}")
                     count += 1
+            if args.save:
+                with open(f"{target}-not-followers.txt", "w") as f:
+                    for followee in target_followees:
+                        if followee not in target_followers:
+                            f.write(followee + "\n")
             print(f"Total amount of not-followers scraped: {count}\n")
 
         if args.profile_pic:
