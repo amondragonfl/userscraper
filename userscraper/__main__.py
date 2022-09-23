@@ -30,16 +30,16 @@ def main():
     except (FileNotFoundError, EOFError):
         if not args.password:
             args.password = getpass(f"Enter password for {args.username}: ")
+        try:
             try:
-                try:
-                    print("Logging in...")
-                    scraper.login(args.username, args.password)
-                except TwoFactorAuthRequiredError:
-                    code = input("Enter 2FA code: ")
-                    scraper.verify_two_factor(code)
-            except AuthenticationError as err:
-                raise SystemExit(err)
-            scraper.save_session(f"{args.username}-session.dat")
+                print("Logging in...")
+                scraper.login(args.username, args.password)
+            except TwoFactorAuthRequiredError:
+                code = input("Enter 2FA code: ")
+                scraper.verify_two_factor(code)
+        except AuthenticationError as err:
+            raise SystemExit(err)
+        scraper.save_session(f"{args.username}-session.dat")
 
     if not args.target:
         args.target = [args.username]
@@ -61,29 +61,24 @@ def main():
 
         if args.followers:
             print(f"[{target} followers]")
-            with open(f"{target}-followers.txt", "w") as file:
-                for follower in target_followers:
-                    file.write(follower + "\n")
-                    print(f"@{follower}")
+            for follower in target_followers:
+                file.write(follower + "\n")
+                print(f"@{follower}")
             print(f"Total amount of followers scraped: {len(target_followers)}\n")
 
         if args.followees:
             print(f"[{target} followees]")
-            with open(f"{target}-followees.txt", "w") as file:
-                for followee in target_followees:
-                    file.write(followee + "\n")
-                    print(f"@{followee}")
+            for followee in target_followees:
+                print(f"@{followee}")
             print(f"Total amount of followees scraped: {len(target_followees)}\n")
 
         if args.not_followers:
             print(f"[{target} not-followers]")
             count = 0
-            with open(f"{target}-not-followers.txt", "w") as file:
-                for followee in target_followees:
-                    if followee not in target_followers:
-                        file.write(followee + "\n")
-                        print(f"@{followee}")
-                        count += 1
+            for followee in target_followees:
+                if followee not in target_followers:
+                    print(f"@{followee}")
+                    count += 1
             print(f"Total amount of not-followers scraped: {count}\n")
 
         if args.profile_pic:
