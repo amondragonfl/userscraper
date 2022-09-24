@@ -2,6 +2,7 @@ from exceptions import TwoFactorAuthRequiredError, AuthenticationError, UserNotF
 from instagram import InstagramScraper
 from argparse import ArgumentParser
 from getpass import getpass
+from tabulate import tabulate
 
 
 def main():
@@ -55,43 +56,47 @@ def main():
 
         if args.followers or args.not_followers:
             print(f"Scraping {target} followers...")
-            target_followers = {user["username"] for user in scraper.get_followers(target_id, max_count=args.count)}
+            target_followers = [[user["username"], user["full_name"], user["id"],
+                                f"https://www.instagram.com/{user['username']}/"]
+                                for user in scraper.get_followers(target_id, max_count=args.count)]
         if args.followees or args.not_followers:
             print(f"Scraping {target} followees...")
-            target_followees = {user["username"] for user in scraper.get_followees(target_id, max_count=args.count)}
+            target_followees = [[user["username"], user["full_name"], user["id"],
+                                f"https://www.instagram.com/{user['username']}/"]
+                                for user in scraper.get_followees(target_id, max_count=args.count)]
 
         if args.followers:
-            print(f"[{target} followers]")
-            for follower in target_followers:
-                print(f"@{follower}")
+            print(f"\n[{target} followers]")
+            print(tabulate(target_followers, headers=["username", "full name", "id", "url"], tablefmt="psql"))
             if args.save:
                 with open(f"{target}-followers.txt", "w") as f:
                     for follower in target_followers:
-                        f.write(follower + "\n")
+                        f.write(follower[0] + "\n")
             print(f"Total amount of followers scraped: {len(target_followers)}\n")
 
         if args.followees:
-            print(f"[{target} followees]")
-            for followee in target_followees:
-                print(f"@{followee}")
+            print(f"\n[{target} followees]")
+            print(tabulate(target_followees, headers=["username", "full name", "id", "url"], tablefmt="psql"))
             if args.save:
                 with open(f"{target}-followees.txt", "w") as f:
                     for followee in target_followees:
-                        f.write(followee + "\n")
+                        f.write(followee[0] + "\n")
             print(f"Total amount of followees scraped: {len(target_followees)}\n")
 
         if args.not_followers:
-            print(f"[{target} not-followers]")
+            print(f"\n[{target} not-followers]")
             count = 0
+            table = []
             for followee in target_followees:
                 if followee not in target_followers:
-                    print(f"@{followee}")
+                    table.append(followee)
                     count += 1
+            print(tabulate(table, headers=["username", "full name", "id", "url"], tablefmt="psql"))
             if args.save:
                 with open(f"{target}-not-followers.txt", "w") as f:
                     for followee in target_followees:
                         if followee not in target_followers:
-                            f.write(followee + "\n")
+                            f.write(followee[0] + "\n")
             print(f"Total amount of not-followers scraped: {count}\n")
 
         if args.profile_pic:
