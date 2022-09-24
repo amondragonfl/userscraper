@@ -65,9 +65,10 @@ def main():
                                 f"https://www.instagram.com/{user['username']}/"]
                                 for user in scraper.get_followees(target_id, max_count=args.count)]
 
+        headers = ["username", "full name", "id", "url"]
         if args.followers:
             print(f"\n[{target} followers]")
-            print(tabulate(target_followers, headers=["username", "full name", "id", "url"], tablefmt="psql"))
+            print(tabulate(target_followers, headers=headers, tablefmt="psql"))
             if args.save:
                 with open(f"{target}-followers.txt", "w") as f:
                     for follower in target_followers:
@@ -76,7 +77,7 @@ def main():
 
         if args.followees:
             print(f"\n[{target} followees]")
-            print(tabulate(target_followees, headers=["username", "full name", "id", "url"], tablefmt="psql"))
+            print(tabulate(target_followees, headers=headers, tablefmt="psql"))
             if args.save:
                 with open(f"{target}-followees.txt", "w") as f:
                     for followee in target_followees:
@@ -91,7 +92,7 @@ def main():
                 if followee not in target_followers:
                     table.append(followee)
                     count += 1
-            print(tabulate(table, headers=["username", "full name", "id", "url"], tablefmt="psql"))
+            print(tabulate(table, headers=headers, tablefmt="psql"))
             if args.save:
                 with open(f"{target}-not-followers.txt", "w") as f:
                     for followee in target_followees:
