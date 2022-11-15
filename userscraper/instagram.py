@@ -31,7 +31,7 @@ class InstagramScraper:
 
     def login(self, username: str, password: str) -> None:
         self.session = self.default_session()
-        resp = self.session.get("https://www.instagram.com/")
+        resp = self.session.get("https://www.instagram.com/api/v1/public/landing_info/")
         self.session.headers.update({'X-CSRFToken': resp.cookies['csrftoken']})
 
         payload = {
