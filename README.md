@@ -35,7 +35,7 @@ To scrape some else's followers:
 ```console
 $ python3 userscraper <your username> -t <target username> -r
 ```
-To scrape the users who you follow, but they don't follow you back.
+To scrape the users who don't follow you back: 
 ```console
 $ python3 userscraper <your username> -n
 ```
